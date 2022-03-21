@@ -1,6 +1,7 @@
 package com.appsdeveloperblog.app.ws.ui.controller;
 
 import com.appsdeveloperblog.app.ws.ui.model.response.UserRest;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.awt.*;
 
 @RestController
 @RequestMapping("/users") // http://localhost:8080/users
@@ -48,8 +51,19 @@ public class UserController {
         return "get user was called with page = " + page + " and limit = " + limit;
     }
 
-    @GetMapping(path = "/{userId}/java-obj-return")
-    public UserRest getUserDetails(@PathVariable String userId) {
+    @GetMapping(path = "/{userId}/java-obj-return-xml", produces = MediaType.APPLICATION_XML_VALUE)
+    public UserRest getUserDetailsViaXML(@PathVariable String userId) {
+        UserRest userRest = new UserRest();
+        userRest.setUserId(userId);
+        userRest.setFirstName("Roberto");
+        userRest.setLastName("Gianotto");
+        userRest.setEmail("gianottoroberto@gmail.com");
+
+        return userRest;
+    }
+
+    @GetMapping(path = "/{userId}/java-obj-return-json", produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserRest getUserDetailsViaJSON(@PathVariable String userId) {
         UserRest userRest = new UserRest();
         userRest.setUserId(userId);
         userRest.setFirstName("Roberto");
