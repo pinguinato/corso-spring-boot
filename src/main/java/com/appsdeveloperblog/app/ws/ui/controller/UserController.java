@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.*;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/users") // http://localhost:8080/users
@@ -69,9 +69,15 @@ public class UserController {
         return new ResponseEntity<>(userRest, HttpStatus.OK);
     }
 
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<UserRest> createUser(@RequestBody UserDetailsRequestModel userDetailsRequestModel) {
+    @PostMapping(consumes = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE
+    },
+            produces = {
+            MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE
+    })
+    public ResponseEntity<UserRest> createUser(@Valid @RequestBody UserDetailsRequestModel userDetailsRequestModel) {
 
         UserRest userRest = new UserRest();
         userRest.setFirstName(userDetailsRequestModel.getFirstName());
