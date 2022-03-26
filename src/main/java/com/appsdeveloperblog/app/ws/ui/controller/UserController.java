@@ -6,12 +6,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/users") // http://localhost:8080/users
 public class UserController {
+
+    Map<String, UserRest> users;
 
     @GetMapping
     public String getUsers() {
@@ -19,8 +24,12 @@ public class UserController {
     }
 
     @GetMapping(path = "/{userId}")
-    public String getUserDetail(@PathVariable String userId) {
-        return "get user was called with user Id = " + userId;
+    public ResponseEntity<UserRest> getUserDetail(@PathVariable String userId) {
+        if (users.containsKey(userId)) {
+            return new ResponseEntity<UserRest>(users.get(userId), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<UserRest>(HttpStatus.NO_CONTENT);
+        }
     }
 
     @GetMapping(path = "/parameters")
@@ -74,15 +83,24 @@ public class UserController {
             MediaType.APPLICATION_XML_VALUE
     },
             produces = {
-            MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_JSON_VALUE,
                     MediaType.APPLICATION_XML_VALUE
-    })
+            })
     public ResponseEntity<UserRest> createUser(@Valid @RequestBody UserDetailsRequestModel userDetailsRequestModel) {
 
         UserRest userRest = new UserRest();
         userRest.setFirstName(userDetailsRequestModel.getFirstName());
         userRest.setLastName(userDetailsRequestModel.getLastName());
         userRest.setEmail(userDetailsRequestModel.getEmail());
+
+        String userId = UUID.randomUUID().toString();
+        userRest.setUserId(userId);
+
+        if (Objects.isNull(users)) {
+            users = new HashMap<>();
+        }
+
+        users.put(userId, userRest);
 
         return new ResponseEntity<>(userRest, HttpStatus.OK);
     }
